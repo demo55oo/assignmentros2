@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot name="assignment_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Dimensions are in metres and follow the assignment drawing. -->
+  <xacro:property name="base_height" value="0.071"/>
+  <xacro:property name="l1_length" value="0.100"/>
+  <xacro:property name="l2_length" value="0.128"/>
+  <xacro:property name="l3_length" value="0.070"/>
+  <xacro:property name="tool_length" value="0.110"/>
+
+  <material name="dark_grey"><color rgba="0.18 0.20 0.23 1"/></material>
+  <material name="orange"><color rgba="0.95 0.40 0.06 1"/></material>
+  <material name="silver"><color rgba="0.72 0.75 0.78 1"/></material>
+  <material name="blue"><color rgba="0.10 0.35 0.80 1"/></material>
+
+  <xacro:macro name="box_inertial" params="mass x y z origin">
+    <inertial>
+      <origin xyz="${origin}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${mass * (y*y + z*z) / 12.0}" ixy="0" ixz="0"
+        iyy="${mass * (x*x + z*z) / 12.0}" iyz="0"
+        izz="${mass * (x*x + y*y) / 12.0}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertial" params="mass radius length origin">
+    <inertial>
+      <origin xyz="${origin}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${mass * (3*radius*radius + length*length) / 12.0}" ixy="0" ixz="0"
+        iyy="${mass * (3*radius*radius + length*length) / 12.0}" iyz="0"
+        izz="${mass * radius*radius / 2.0}"/>
+    </inertial>
+  </xacro:macro>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${base_height / 2.0}"/>
+      <geometry><cylinder radius="0.055" length="${base_height}"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_height / 2.0}"/>
+      <geometry><cylinder radius="0.055" length="${base_height}"/></geometry>
+    </collision>
+    <xacro:cylinder_inertial mass="0.50" radius="0.055" length="${base_height}"
+      origin="0 0 ${base_height / 2.0}"/>
+  </link>
+
+  <link name="link1">
+    <visual>
+      <origin xyz="0 0 ${l1_length / 2.0}"/>
+      <geometry><box size="0.045 0.045 ${l1_length}"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${l1_length / 2.0}"/>
+      <geometry><box size="0.045 0.045 ${l1_length}"/></geometry>
+    </collision>
+    <xacro:box_inertial mass="0.30" x="0.045" y="0.045" z="${l1_length}"
+      origin="0 0 ${l1_length / 2.0}"/>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="10" velocity="1.5"/>
+    <dynamics damping="0.15" friction="0.05"/>
+  </joint>
+
+  <link name="link2">
+    <visual>
+      <origin xyz="${l2_length / 2.0} 0 0"/>
+      <geometry><box size="${l2_length} 0.035 0.035"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="${l2_length / 2.0} 0 0"/>
+      <geometry><box size="${l2_length} 0.035 0.035"/></geometry>
+    </collision>
+    <xacro:box_inertial mass="0.25" x="${l2_length}" y="0.035" z="0.035"
+      origin="${l2_length / 2.0} 0 0"/>
+  </link>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0 ${l1_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="10" velocity="1.5"/>
+    <dynamics damping="0.15" friction="0.05"/>
+  </joint>
+
+  <link name="link3">
+    <visual>
+      <origin xyz="${l3_length / 2.0} 0 0"/>
+      <geometry><box size="${l3_length} 0.032 0.032"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="${l3_length / 2.0} 0 0"/>
+      <geometry><box size="${l3_length} 0.032 0.032"/></geometry>
+    </collision>
+    <xacro:box_inertial mass="0.16" x="${l3_length}" y="0.032" z="0.032"
+      origin="${l3_length / 2.0} 0 0"/>
+  </link>
+
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="${l2_length} 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="8" velocity="1.5"/>
+    <dynamics damping="0.12" friction="0.04"/>
+  </joint>
+
+  <link name="end_effector">
+    <visual>
+      <origin xyz="${tool_length / 2.0} 0 0"/>
+      <geometry><box size="${tool_length} 0.030 0.030"/></geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="${tool_length / 2.0} 0 0"/>
+      <geometry><box size="${tool_length} 0.030 0.030"/></geometry>
+    </collision>
+    <xacro:box_inertial mass="0.12" x="${tool_length}" y="0.030" z="0.030"
+      origin="${tool_length / 2.0} 0 0"/>
+  </link>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="end_effector"/>
+    <origin xyz="${l3_length} 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="6" velocity="1.5"/>
+    <dynamics damping="0.10" friction="0.03"/>
+  </joint>
+
+  <link name="gripper_finger">
+    <visual>
+      <origin xyz="0.022 0 0"/>
+      <geometry><box size="0.044 0.012 0.012"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.022 0 0"/>
+      <geometry><box size="0.044 0.012 0.012"/></geometry>
+    </collision>
+    <xacro:box_inertial mass="0.04" x="0.044" y="0.012" z="0.012"
+      origin="0.022 0 0"/>
+  </link>
+
+  <joint name="joint5" type="revolute">
+    <parent link="end_effector"/>
+    <child link="gripper_finger"/>
+    <origin xyz="${tool_length} 0.015 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="3" velocity="2.0"/>
+    <dynamics damping="0.08" friction="0.02"/>
+  </joint>
+
+  <ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <xacro:macro name="controlled_joint" params="name">
+      <joint name="${name}">
+        <command_interface name="position">
+          <param name="min">-1.5708</param>
+          <param name="max">1.5708</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </xacro:macro>
+    <xacro:controlled_joint name="joint1"/>
+    <xacro:controlled_joint name="joint2"/>
+    <xacro:controlled_joint name="joint3"/>
+    <xacro:controlled_joint name="joint4"/>
+    <xacro:controlled_joint name="joint5"/>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="libgz_ros2_control-system.so"
+            name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find arm_assignment)/config/controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+</robot>

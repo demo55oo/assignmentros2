@@ -1,0 +1,18 @@
+# ROS / colcon
+build/
+install/
+log/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local secrets / env
+.env
+*.pem
