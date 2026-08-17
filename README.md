@@ -9,13 +9,13 @@ This project contains both assignment parts:
 The model uses the dimensions from the assignment: 7.1 cm base, 10 cm L1,
 12.8 cm L2, 7 cm L3, and an 11 cm end effector.
 
+## Team
+- Adham Mansour Elsaid — 23012143
+- Hamza Mohamed Yasser — 21012014
+- Aley eldin osama ali Ali 23012080
+- mohamed ahmed hesham 23012194
+- Youssef abdelkader mohamed 23010144
 
-Team
-Adham Mansour Elsaid — 23012143
-Hamza Mohamed Yasser — 21012014
-Aley eldin osama ali Ali 23012080
-mohamed ahmed hesham 23012194
-Youssef abdelkader mohamed 23010144
 
 
 ## Project layout
