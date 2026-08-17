@@ -1,5 +1,7 @@
 # ROS 2 Robotic Arm Assignment
 
+**Demo video:** https://www.loom.com/share/1761c3ae3028425488cb573162f93b29
+
 This project contains both assignment parts:
 
 - Part 1: a dimensioned five-joint URDF/Xacro arm, RViz, Gazebo Sim,
@@ -16,7 +18,11 @@ The model uses the dimensions from the assignment: 7.1 cm base, 10 cm L1,
 - mohamed ahmed hesham 23012194
 - Youssef abdelkader mohamed 23010144
 
+## Docs (start here)
+- **[HOW_TO_RUN.md](HOW_TO_RUN.md)** — full test / terminal / recording guide
+- **[TECHNICAL.md](TECHNICAL.md)** — URDF, controllers, serial, file map
 
+Repo: https://github.com/demo55oo/assignmentros2
 
 ## Project layout
 
